@@ -2,32 +2,20 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
+var Campground = require('./models/campground.js');
 
-mongoose.connect("mongodb://localhost/campr")
+mongoose.connect("mongodb://localhost/campr");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
-
-//schema setup
-
-var campgroundSchema = new  mongoose.Schema({
-	name: "string",
-	image: "string",
-	description: "string"
-});
-
-
-// create model
-var Campground = mongoose.model("Campground", campgroundSchema);
-
-
-Campground.create({
-	name: "Salmon Creek",
-	image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg",
-	description :"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-})
+//
+// Campground.create({
+// 	name: "Salmon Creek",
+// 	image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg",
+// 	description :"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+// })
 
 // var campgrounds = [
 // 		{name: "Salmon Creek", image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg"},
@@ -44,20 +32,18 @@ Campground.create({
 
 //index
 app.get("/", function(req, res){
-	res.render("index");
+	res.redirect("/campgrounds");
 });
 
 app.get("/campgrounds", function(req, res){
 // get all campgrounds from db;
-	campgrounds = Campground.find({}, function(err, allCampgrounds){
+	Campground.find({}, function(err, allCampgrounds){
 		if(err){
 			 console.log(err);
 		}else{
 			res.render("index", {campgrounds:allCampgrounds});
 		}
-
 	});
-
 });
 
 
