@@ -1,24 +1,56 @@
-var express = require('express');
+var express = require("express");
 var app = express();
+var bodyParser = require("body-parser");
+var mongoose = require('mongoose');
 
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 
-app.get("/",function(req,res){
-  res.render("home");
+//schema setup
+
+var campgroundSchema = new  mongoose.Schema({
+	name: string,
+	image: string
+});
+
+var campgrounds = [
+		{name: "Salmon Creek", image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg"},
+		{name: "Smith Rock", image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg"},
+		{name: "Honeyman State Park", image: "https://farm6.staticflickr.com/5487/11519019346_f66401b6c1.jpg"},
+		{name: "Salmon Creek", image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg"},
+		{name: "Smith Rock", image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg"},
+		{name: "Honeyman State Park", image: "https://farm6.staticflickr.com/5487/11519019346_f66401b6c1.jpg"},
+		{name: "Salmon Creek", image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg"},
+		{name: "Smith Rock", image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg"},
+		{name: "Honeyman State Park", image: "https://farm6.staticflickr.com/5487/11519019346_f66401b6c1.jpg"}
+	]
+
+app.get("/", function(req, res){
+	res.render("landing");
 });
 
 app.get("/campgrounds", function(req, res){
-  var campgrounds = [
-    {name: 'camp 1', image : 'https://farm6.staticflickr.com/5181/5641024448_04fefbb64d.jpg'},
-    {name: 'camp 2', image : 'https://farm1.staticflickr.com/112/316612921_f23683ca9d.jpg'},
-    {name: 'camp 3', image : 'https://farm5.staticflickr.com/4016/4369518024_0f64300987.jpg'}
-  ];
+	res.render("campgrounds", {campgrounds:campgrounds});
+});
 
-  res.render("campgrounds", {campgrounds: campgrounds});
+
+app.get("/campgrounds/new", function(req, res){
+	res.render("new.ejs");
+});
+
+app.post("/campgrounds", function(req, res){
+	//get data from form and add to campgrounds array
+	var name = req.body.name;
+	var image = req.body.image;
+	var newCampground = {name: name, image: image};
+	campgrounds.push(newCampground);
+	//redirect back to campgrounds page
+	res.redirect("/campgrounds");
 });
 
 
 app.listen(3000, function(){
-  console.log("Campr server started in port 3000");
-});
+	console.log("App running on 3000, baby!");
+})
