@@ -3,13 +3,17 @@ var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
 var Campground = require('./models/campground.js');
+var seedDB = require('./seeds');
+
+
+
 
 mongoose.connect("mongodb://localhost/campr");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
-
+seedDB();
 //
 // Campground.create({
 // 	name: "Salmon Creek",
@@ -17,17 +21,7 @@ app.set("view engine", "ejs");
 // 	description :"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 // })
 
-// var campgrounds = [
-// 		{name: "Salmon Creek", image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg"},
-// 		{name: "Smith Rock", image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg"},
-// 		{name: "Honeyman State Park", image: "https://farm6.staticflickr.com/5487/11519019346_f66401b6c1.jpg"},
-// 		{name: "Salmon Creek", image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg"},
-// 		{name: "Smith Rock", image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg"},
-// 		{name: "Honeyman State Park", image: "https://farm6.staticflickr.com/5487/11519019346_f66401b6c1.jpg"},
-// 		{name: "Salmon Creek", image: "https://farm9.staticflickr.com/8002/7299820870_e78782c078.jpg"},
-// 		{name: "Smith Rock", image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg"},
-// 		{name: "Honeyman State Park", image: "https://farm6.staticflickr.com/5487/11519019346_f66401b6c1.jpg"}
-// 	]
+
 
 
 //index
@@ -78,16 +72,17 @@ app.post("/campgrounds", function(req, res){
 
 });
 
-
+//SHOW
 app.get("/campgrounds/:id", function(req, res){
 
 	//find campground with a  id
 	var id = req.params.id;
 
- Campground.findById( id ,function(err,foundCampground){
+ Campground.findById( id ).populate('comments').exec(function(err,foundCampground){
 	 	if(err){
 			console.log("something went wrong");
 		}else{
+			console.log("=======================> ", foundCampground);
 			res.render("show", {campground: foundCampground});
 		}
  });

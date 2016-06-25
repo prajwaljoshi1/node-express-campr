@@ -11,6 +11,15 @@
 					<p>
 					       <%= campground.description %>
 					</p>
+
+          <div>
+					       <% campground.comments.forEach(function(comment){ %>
+
+                   <p>
+                     <strong><%= comment.author%>: </strong> <%= comment.text %>
+                   </p>
+                <% }); %>
+					</div>
 				</div>
 			</div>
 		</div
